@@ -1,24 +1,35 @@
-import Square from "./Square"
-import Input from "./Input"
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import Form from './Form';
+import Button from './Button';
+import List from './List';
+import Table from './Table';
+
 function App() {
-  const [colorValue, setColorValue] = useState('')
-  const [hexValue, setHexValue] = useState('')
-  const [isDarkText, setIsDarkText] = useState(true)
+  const API_URL = 'https://jsonplaceholder.typicode.com/';
+  const [reqType, setReqType] = useState('users');
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+
+    const fetchItems = async () => {
+      try{
+        const response = await fetch(`${API_URL}${reqType}`);
+        const data = await response.json();
+        setItems(data);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    fetchItems();
+
+  }, [reqType])
 
   return (
-    <div className="App">
-      <Square 
-      colorValue={colorValue} 
-      hexValue={hexValue}
-      isDarkText={isDarkText}
-      />
-      <Input 
-      colorValue={colorValue}
-      setColorValue={setColorValue}
-      setHexValue={setHexValue}
-      isDarkText={isDarkText}
-      />
+    <div className="App"> 
+      <Form reqType={reqType} setReqType={setReqType} />
+      {/* <List items={items} /> */}
+      <Table items={items} />
     </div>
   )
 }
